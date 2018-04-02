@@ -60,7 +60,7 @@ void nmea_callback(const nmea_msgs::Sentence::ConstPtr &input)
     double heading = stod(nmea.at(2));
     double roll = stod(nmea.at(4));
     double pitch = stod(nmea.at(5));
-    std::cout << "heading: " << heading << " , roll: " << roll << " , pitch: " << pitch << std::endl;
+    std::cout << "heading: " << heading << ", yaw: " << M_PI*(90.0-heading)/180.0 << std::endl;
 
     visualization_msgs::Marker marker;
     marker.header.frame_id = "/map";
@@ -72,7 +72,8 @@ void nmea_callback(const nmea_msgs::Sentence::ConstPtr &input)
     marker.pose.position.y = -75475.0;
     marker.pose.position.z = 210.0;
     tf::Quaternion q;
-    q.setRPY(M_PI*roll/180.0, M_PI*pitch/180.0, M_PI*(90.0-heading)/180.0);
+    q.setRPY(M_PI*roll/180.0, -M_PI*pitch/180.0, M_PI*(90.0-heading)/180.0);
+
     quaternionTFToMsg(q, marker.pose.orientation);
 
     marker.scale.x = 3.0;

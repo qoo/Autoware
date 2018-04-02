@@ -31,6 +31,8 @@
 
 #include "nmea2tfpose_core.h"
 
+double pashr_roll, pashr_pitch, pashr_yaw;
+
 namespace gnss_localizer
 {
 // Constructor
@@ -96,9 +98,15 @@ void Nmea2TFPoseNode::publishTF()
 
 void Nmea2TFPoseNode::createOrientation()
 {
+  /*
   yaw_ = atan2(geo_.x() - last_geo_.x(), geo_.y() - last_geo_.y());
   roll_ = 0;
   pitch_ = 0;
+  */
+//  yaw_ = pashr_yaw;
+//  roll_ = 0.0;
+//  pitch_ = 0.0;
+
 }
 
 void Nmea2TFPoseNode::convert(std::vector<std::string> nmea, ros::Time current_stamp)
@@ -117,9 +125,20 @@ void Nmea2TFPoseNode::convert(std::vector<std::string> nmea, ros::Time current_s
     else if (nmea.at(0) == "$PASHR")
     {
       orientation_time_ = stod(nmea.at(1));
-      roll_ = stod(nmea.at(4)) * M_PI / 180.;
-      pitch_ = -1 * stod(nmea.at(5)) * M_PI / 180.;
-      yaw_ = -1 * stod(nmea.at(2)) * M_PI / 180. + M_PI / 2;
+      // q.setRPY(M_PI*roll/180.0, -M_PI*pitch/180.0, M_PI*(90.0-heading)/180.0);
+
+      double roll_deg = stod(nmea.at(4));
+      double pitch_deg = stod(nmea.at(5));
+      double yaw_deg = stod(nmea.at(2));
+
+//      q.setRPY(M_PI*roll/180.0, -M_PI*pitch/180.0, M_PI*(90.0-heading)/180.0);
+
+      roll_ = M_PI + M_PI * roll_deg / 180.0;
+      pitch_ =  -1.0 *  M_PI * pitch_deg  / 180.0;
+      yaw_ = M_PI * (90.0 - yaw_deg) / 180.0;
+
+      std::cout << "roll: " << roll_ << ", pitch: " << pitch_ << ", yaw: " << yaw_ << std::endl;
+
       ROS_INFO("PASHR is subscribed.");
     }
     else if(nmea.at(0).compare(3, 3, "GGA") == 0)
@@ -151,11 +170,13 @@ void Nmea2TFPoseNode::callbackFromNmeaSentence(const nmea_msgs::Sentence::ConstP
   current_time_ = msg->header.stamp;
   convert(split(msg->sentence), msg->header.stamp);
 
-  double timeout = 10.0;
+//  double timeout = 10.0;
+  double timeout = 0.0;
   if (fabs(orientation_stamp_.toSec() - msg->header.stamp.toSec()) > timeout)
   {
     double dt = sqrt(pow(geo_.x() - last_geo_.x(), 2) + pow(geo_.y() - last_geo_.y(), 2));
-    double threshold = 0.2;
+    //double threshold = 0.2;
+    double threshold = 0.0;
     if (dt > threshold)
     {
       ROS_INFO("QQ is not subscribed. Orientation is created by atan2");
@@ -167,6 +188,7 @@ void Nmea2TFPoseNode::callbackFromNmeaSentence(const nmea_msgs::Sentence::ConstP
     return;
   }
 
+  /*
   double e = 1e-2;
   if (fabs(orientation_time_ - position_time_) < e)
   {
@@ -174,6 +196,7 @@ void Nmea2TFPoseNode::callbackFromNmeaSentence(const nmea_msgs::Sentence::ConstP
     publishTF();
     return;
   }
+   */
 }
 
 std::vector<std::string> split(const std::string &string)

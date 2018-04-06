@@ -120,11 +120,12 @@ void points_callback(const pcl::PointCloud<pcl::PointXYZI>::ConstPtr &input)
 
     map += pcl_out;
     map.header.frame_id = "/map";
-    /*
+
     sensor_msgs::PointCloud2::Ptr points_transformed_ptr(new sensor_msgs::PointCloud2);
     pcl::toROSMsg(pcl_out, *points_transformed_ptr);
     points_transformed_pub.publish(*points_transformed_ptr);
-*/
+
+    /*
     if (c % 5 == 1) {
       pcl::VoxelGrid<pcl::PointXYZI> voxel_grid_filter;
       voxel_grid_filter.setLeafSize(0.3, 0.3, 0.3);
@@ -138,6 +139,7 @@ void points_callback(const pcl::PointCloud<pcl::PointXYZI>::ConstPtr &input)
       pcl::toROSMsg(map, *map_ptr);
       points_transformed_pub.publish(*map_ptr);
     }
+     */
     c++;
     // Set log file name.
     std::ofstream ofs;
@@ -158,7 +160,6 @@ void points_callback(const pcl::PointCloud<pcl::PointXYZI>::ConstPtr &input)
       exit(1);
     }
 
-    /*
     for (int i = 0; i < (int)pcl_out.points.size(); i++)
     {
       ofs << std::fixed << std::setprecision(5) << pcl_out.points[i].x << ","
@@ -166,8 +167,8 @@ void points_callback(const pcl::PointCloud<pcl::PointXYZI>::ConstPtr &input)
           << std::fixed << std::setprecision(5) << pcl_out.points[i].z << ","
           << pcl_out.points[i].intensity << std::endl;
     }
-*/
-//    std::cout << "Wrote " << pcl_out.size() << " points to " << filename << "." << std::endl;
+
+    std::cout << "Wrote " << pcl_out.size() << " points to " << filename << "." << std::endl;
     added_scan_num++;
     if(added_scan_num == SCAN_NUM)
     {

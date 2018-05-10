@@ -74,6 +74,8 @@ compiler:
 notifications:
     slack: star4:911NA0lU8gDHitCKLto9LzPJ
 env:
+  global:
+    - CI_SOURCE_PATH=$(pwd)
   matrix:
     - USE_DEB=true  ROS_DISTRO="indigo" ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu
 #    - USE_DEB=true  ROS_DISTRO="indigo" ROS_REPOSITORY_PATH=http://packages.ros.org/ros-shadow-fixed/ubuntu
@@ -82,4 +84,4 @@ env:
 install:
   - git clone https://github.com/ros-industrial/industrial_ci.git .ci_config
 script:
-  - source .ci_config/travis.sh
+  - travis_wait 30 source ${CI_SOURCE_PATH}/.ci_config/travis.sh

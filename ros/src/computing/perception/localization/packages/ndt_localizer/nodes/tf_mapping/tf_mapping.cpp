@@ -88,7 +88,7 @@ void points_callback(const pcl::PointCloud<pcl::PointXYZI>::ConstPtr &input)
         tf::Point pt_world = transform * pt;
         pcl::PointXYZI wp;
         double distance = pt.x() * pt.x() + pt.y() * pt.y() + pt.z() * pt.z();
-        if (distance < 3 * 3)
+        if (distance < 1.0)
           continue;
         wp.x = pt_world.x();
         wp.y = pt_world.y();
@@ -104,7 +104,7 @@ void points_callback(const pcl::PointCloud<pcl::PointXYZI>::ConstPtr &input)
         tf::Point pt_world = transform * pt;
         pcl::PointXYZI wp;
         double distance = pt.x() * pt.x() + pt.y() * pt.y() + pt.z() * pt.z();
-        if (distance < 3 * 3)
+        if (distance < 1.0)
           continue;
         wp.x = pt_world.x();
         wp.y = pt_world.y();

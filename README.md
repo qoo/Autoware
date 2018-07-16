@@ -5,6 +5,29 @@
 |Master |[![Build Status](https://travis-ci.org/CPFL/Autoware.svg?branch=master)](https://travis-ci.org/CPFL/Autoware) |
 |Develop|[![Build Status](https://travis-ci.org/CPFL/Autoware.svg?branch=develop)](https://travis-ci.org/CPFL/Autoware)|
 
+# Develop note
+## Camera calibration
+1. /docker: change run.sh to 
+
+```
+xhost +
+
+nvidia-docker run \
+    -it --rm \
+      -e SHELL\
+      -e DISPLAY=unix:0.0\
+      -e NO_AT_BRIDGE=1 \
+      -e QT_X11_NO_MITSHM=1\
+```
+2. Run Autoware
+```
+~/Autoware/docker/generic$ ./run.sh kinetic
+~/Autoware/ros$ ./run kinetic &
+```
+3. Follow https://github.com/CPFL/Autoware/wiki/Calibration
+4. "3.2　Start Calibration Tool Kit."
+<div align="center"><img src="docs/images/calibration1.png" width="400"/></div>
+
 # Autoware
 Open-source software for urban autonomous driving, maintained by [Tier IV](http://www.tier4.jp). The following functions are supported:
 
